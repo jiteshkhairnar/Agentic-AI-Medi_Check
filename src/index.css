@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #f8f9ff;
+    color: #0b1c30;
+  }
+}
+
+.font-metric-tabular {
+  font-feature-settings: "tnum" 1, "zero" 1;
+}

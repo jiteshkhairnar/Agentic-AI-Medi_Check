@@ -1,0 +1,6 @@
+{
+  "name": "medicine_check - Medicine Comparison & Price Transparency",
+  "description": "Multi-tenant healthcare SaaS and consumer platform for active ingredient medicine comparison, Jan Aushadhi generic discovery, NPPA DPCO price ceiling enforcement, and CDSCO compliance traceability.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
