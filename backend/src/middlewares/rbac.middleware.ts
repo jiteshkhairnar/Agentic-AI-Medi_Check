@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserRole } from '../../../src/types';
+import { UserRole } from '../../../shared/types';
 
 /**
  * Middleware to enforce role-based access control.

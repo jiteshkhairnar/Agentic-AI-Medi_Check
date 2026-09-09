@@ -1,5 +1,5 @@
 import { MedicineRepository } from '../repositories/MedicineRepository';
-import { MedicineProduct, MedicineSubstitute } from '../../../src/types';
+import { MedicineProduct, MedicineSubstitute } from '../../../shared/types';
 
 export class MedicineService {
   /**

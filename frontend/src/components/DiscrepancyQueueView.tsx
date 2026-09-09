@@ -33,8 +33,8 @@ import {
   Send,
   Eye
 } from 'lucide-react';
-import { DISCREPANCY_TICKETS } from '../data/mockData';
-import { DiscrepancyTicket, DiscrepancySeverity, DiscrepancyCategory } from '../types';
+import { DISCREPANCY_TICKETS } from '../../../shared/data/mockData';
+import { DiscrepancyTicket, DiscrepancySeverity, DiscrepancyCategory } from '../../../shared/types';
 
 interface DiscrepancyQueueViewProps {
   onResolveTicketSuccess: (ticketId: string, rationale: string, capPrice: number) => void;

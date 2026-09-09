@@ -1,5 +1,5 @@
 import { DiscrepancyRepository } from '../repositories/DiscrepancyRepository';
-import { DiscrepancyTicket, AuthUser } from '../../../src/types';
+import { DiscrepancyTicket, AuthUser } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class AdminService {

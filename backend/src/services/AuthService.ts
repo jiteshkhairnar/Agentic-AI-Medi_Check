@@ -49,7 +49,7 @@ export class AuthService {
       iss: JWT_ISSUER
     };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN as any });
 
     return { user: foundUser, token };
   }

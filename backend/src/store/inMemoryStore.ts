@@ -1,10 +1,10 @@
-import { MEDICINES_DATA, DISCREPANCY_TICKETS, AUDIT_LOG_EVENTS } from '../../../src/data/mockData';
+import { MEDICINES_DATA, DISCREPANCY_TICKETS, AUDIT_LOG_EVENTS } from '../../../shared/data/mockData';
 import { 
   DEMO_USERS, 
   INITIAL_STORE_INVENTORY, 
   INITIAL_PRESCRIPTION_REQUESTS, 
   INITIAL_TENANTS 
-} from '../../../src/data/portalMockData';
+} from '../../../shared/data/portalMockData';
 import { 
   MedicineProduct, 
   AuthUser, 
@@ -13,7 +13,7 @@ import {
   DiscrepancyTicket, 
   TenantOrganization,
   AuditLogEvent
-} from '../../../src/types';
+} from '../../../shared/types';
 
 // In-Memory Collections
 export const Store = {

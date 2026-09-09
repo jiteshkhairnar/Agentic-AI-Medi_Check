@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { 
   AuthUser, TenantOrganization, PlatformUserItem, UserRole, AppViewMode
-} from '../types';
-import { INITIAL_TENANTS, INITIAL_PLATFORM_USERS } from '../data/portalMockData';
+} from '../../../shared/types';
+import { INITIAL_TENANTS, INITIAL_PLATFORM_USERS } from '../../../shared/data/portalMockData';
 import { api } from '../api/client';
 
 interface AdminPortalViewProps {

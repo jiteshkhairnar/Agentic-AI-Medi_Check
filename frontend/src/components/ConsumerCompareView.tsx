@@ -7,8 +7,8 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Search, ShieldCheck, SlidersHorizontal, Sparkles, AlertTriangle, ArrowRight, CheckCircle2, Building2, MapPin, ChevronRight, ChevronDown, Info, FileText, ExternalLink, Share2, Bookmark, BookmarkCheck, Percent, Check, X, Stethoscope, FlaskConical, Award, Clock, CircleAlert, Store
 } from 'lucide-react';
-import { MEDICINES_DATA, NEARBY_STORES } from '../data/mockData';
-import { MedicineProduct, MedicineSubstitute } from '../types';
+import { MEDICINES_DATA, NEARBY_STORES } from '../../../shared/data/mockData';
+import { MedicineProduct, MedicineSubstitute } from '../../../shared/types';
 import { api } from '../api/client';
 
 interface ConsumerCompareViewProps {

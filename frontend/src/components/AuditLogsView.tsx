@@ -27,8 +27,8 @@ import {
   Terminal,
   Clock
 } from 'lucide-react';
-import { AUDIT_LOG_EVENTS } from '../data/mockData';
-import { AuditLogEvent } from '../types';
+import { AUDIT_LOG_EVENTS } from '../../../shared/data/mockData';
+import { AuditLogEvent } from '../../../shared/types';
 
 interface AuditLogsViewProps {
   onOpenComplianceCert: () => void;

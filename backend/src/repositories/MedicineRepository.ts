@@ -1,4 +1,4 @@
-import { MedicineProduct } from '../../../src/types';
+import { MedicineProduct } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class MedicineRepository {

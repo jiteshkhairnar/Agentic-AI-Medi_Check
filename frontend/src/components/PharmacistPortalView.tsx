@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { 
   AuthUser, StoreInventoryItem, PrescriptionDispenseRequest, SupplierReorderItem 
-} from '../types';
-import { INITIAL_SUPPLIER_ORDERS } from '../data/portalMockData';
+} from '../../../shared/types';
+import { INITIAL_SUPPLIER_ORDERS } from '../../../shared/data/portalMockData';
 import { api } from '../api/client';
 
 interface PharmacistPortalViewProps {

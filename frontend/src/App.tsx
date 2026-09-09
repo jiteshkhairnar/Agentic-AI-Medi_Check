@@ -16,12 +16,12 @@ import { SavingsCalculatorModal } from './components/SavingsCalculatorModal';
 import { CdscoCertificateModal } from './components/CdscoCertificateModal';
 import { RegisterCanonicalDrugModal } from './components/RegisterCanonicalDrugModal';
 import { SavedMedicinesDrawer } from './components/SavedMedicinesDrawer';
-import { MEDICINES_DATA } from './data/mockData';
-import { AppViewMode, MedicineSubstitute, AuthUser } from './types';
+import { MEDICINES_DATA } from '../../shared/data/mockData';
+import { AppViewMode, MedicineSubstitute, AuthUser } from '../../shared/types';
 import { PharmacistPortalView } from './components/PharmacistPortalView';
 import { AdminPortalView } from './components/AdminPortalView';
 import { AuthModal } from './components/AuthModal';
-import { DEMO_USERS } from './data/portalMockData';
+import { DEMO_USERS } from '../../shared/data/portalMockData';
 import { ShieldCheck, Heart, FileText, CheckCircle2, Lock, Store, Key } from 'lucide-react';
 
 export default function App() {

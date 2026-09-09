@@ -1,4 +1,4 @@
-import { AuditLogEvent } from '../../../src/types';
+import { AuditLogEvent } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class AuditRepository {

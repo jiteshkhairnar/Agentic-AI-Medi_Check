@@ -1,6 +1,6 @@
 import { InventoryRepository } from '../repositories/InventoryRepository';
 import { PrescriptionRepository } from '../repositories/PrescriptionRepository';
-import { StoreInventoryItem, PrescriptionDispenseRequest } from '../../../src/types';
+import { StoreInventoryItem, PrescriptionDispenseRequest } from '../../../shared/types';
 
 export class PharmacistService {
   /**

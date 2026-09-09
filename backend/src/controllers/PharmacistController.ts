@@ -19,7 +19,7 @@ export class PharmacistController {
       const validation = updateStockSchema.safeParse(req.body);
       
       if (!validation.success) {
-        res.status(400).json({ success: false, error: validation.error.errors[0].message });
+        res.status(400).json({ success: false, error: validation.error.issues[0].message });
         return;
       }
 
@@ -40,7 +40,7 @@ export class PharmacistController {
       const validation = dispensePrescriptionSchema.safeParse(req.body);
       
       if (!validation.success) {
-        res.status(400).json({ success: false, error: validation.error.errors[0].message });
+        res.status(400).json({ success: false, error: validation.error.issues[0].message });
         return;
       }
 

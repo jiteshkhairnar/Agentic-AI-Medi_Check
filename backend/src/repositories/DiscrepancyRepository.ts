@@ -1,4 +1,4 @@
-import { DiscrepancyTicket } from '../../../src/types';
+import { DiscrepancyTicket } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class DiscrepancyRepository {

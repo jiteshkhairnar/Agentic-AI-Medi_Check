@@ -14,7 +14,7 @@ export class MedicineController {
       
       const validation = searchMedicinesSchema.safeParse({ query });
       if (!validation.success) {
-        res.status(400).json({ success: false, error: validation.error.errors[0].message });
+        res.status(400).json({ success: false, error: validation.error.issues[0].message });
         return;
       }
 

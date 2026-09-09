@@ -1,4 +1,4 @@
-import { PrescriptionDispenseRequest } from '../../../src/types';
+import { PrescriptionDispenseRequest } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class PrescriptionRepository {

@@ -1,4 +1,4 @@
-import { StoreInventoryItem } from '../../../src/types';
+import { StoreInventoryItem } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class InventoryRepository {

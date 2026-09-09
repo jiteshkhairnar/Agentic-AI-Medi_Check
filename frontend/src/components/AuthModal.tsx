@@ -23,8 +23,8 @@ import {
   Layers,
   ChevronRight
 } from 'lucide-react';
-import { AuthUser, UserRole } from '../types';
-import { DEMO_USERS } from '../data/portalMockData';
+import { AuthUser, UserRole } from '../../../shared/types';
+import { DEMO_USERS } from '../../../shared/data/portalMockData';
 import { api } from '../api/client';
 
 interface AuthModalProps {

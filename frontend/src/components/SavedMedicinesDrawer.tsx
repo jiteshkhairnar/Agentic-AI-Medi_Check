@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { X, Bookmark, Share2, Trash2, ArrowRight, Building2, Check, MapPin } from 'lucide-react';
-import { MedicineSubstitute } from '../types';
+import { MedicineSubstitute } from '../../../shared/types';
 
 interface SavedMedicinesDrawerProps {
   isOpen: boolean;

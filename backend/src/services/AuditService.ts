@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { AuditRepository } from '../repositories/AuditRepository';
-import { AuditLogEvent } from '../../../src/types';
+import { AuditLogEvent } from '../../../shared/types';
 
 export class AuditService {
   /**

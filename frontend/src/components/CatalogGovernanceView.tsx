@@ -26,8 +26,8 @@ import {
   Building2,
   ListFilter
 } from 'lucide-react';
-import { MEDICINES_DATA } from '../data/mockData';
-import { MedicineProduct } from '../types';
+import { MEDICINES_DATA } from '../../../shared/data/mockData';
+import { MedicineProduct } from '../../../shared/types';
 
 interface CatalogGovernanceViewProps {
   onOpenRegisterModal: () => void;

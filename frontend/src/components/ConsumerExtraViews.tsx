@@ -20,7 +20,7 @@ import {
   Clock,
   ArrowRight
 } from 'lucide-react';
-import { NEARBY_STORES, MEDICINES_DATA } from '../data/mockData';
+import { NEARBY_STORES, MEDICINES_DATA } from '../../../shared/data/mockData';
 
 interface ConsumerExtraViewsProps {
   activeSubView: 'salt-directory' | 'stores' | 'clinical-trust' | 'history';

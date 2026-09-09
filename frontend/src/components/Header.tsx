@@ -23,7 +23,7 @@ import {
   Calculator,
   FileText
 } from 'lucide-react';
-import { AppViewMode, UserRole, AuthUser } from '../types';
+import { AppViewMode, UserRole, AuthUser } from '../../../shared/types';
 
 interface HeaderProps {
   currentView: AppViewMode;

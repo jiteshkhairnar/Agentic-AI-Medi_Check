@@ -1,4 +1,4 @@
-import { UserRole } from '../../../src/types';
+import { UserRole } from '../../../shared/types';
 
 export interface User {
   id: string;

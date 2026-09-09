@@ -1,4 +1,4 @@
-import { TenantOrganization } from '../../../src/types';
+import { TenantOrganization } from '../../../shared/types';
 import { Store } from '../store/inMemoryStore';
 
 export class TenantRepository {
