@@ -66,23 +66,6 @@ class ApiClient {
   public getDiscrepancies(): Promise<DiscrepancyTicket[]> {
     return this.fetch(`/admin/discrepancies`);
   }
-
-  // CSV Medicine Dataset
-  public searchCsvMedicines(query: string = '', limit: number = 50): Promise<any> {
-    return this.fetch(`/csv-medicines/search?query=${encodeURIComponent(query)}&limit=${limit}`);
-  }
-
-  public getCsvMedicineById(id: string): Promise<any> {
-    return this.fetch(`/csv-medicines/${id}`);
-  }
-
-  public getGenerics(id: string): Promise<any> {
-    return this.fetch(`/csv-medicines/${id}/generics`);
-  }
-
-  public searchBySalt(salt: string, limit: number = 50): Promise<any> {
-    return this.fetch(`/csv-medicines/salt-search?salt=${encodeURIComponent(salt)}&limit=${limit}`);
-  }
 }
 
 export const api = new ApiClient();

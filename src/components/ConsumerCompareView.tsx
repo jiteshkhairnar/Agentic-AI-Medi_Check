@@ -37,14 +37,6 @@ export const ConsumerCompareView: React.FC<ConsumerCompareViewProps> = ({
   
   const [medicinesData, setMedicinesData] = useState<MedicineProduct[]>(MEDICINES_DATA); // fallback
 
-  // CSV Dataset state
-  const [csvSearchResults, setCsvSearchResults] = useState<any[]>([]);
-  const [csvSelectedMedicine, setCsvSelectedMedicine] = useState<any | null>(null);
-  const [csvGenerics, setCsvGenerics] = useState<any[]>([]);
-  const [csvSavings, setCsvSavings] = useState<any | null>(null);
-  const [csvLoading, setCsvLoading] = useState(false);
-  const [csvSearched, setCsvSearched] = useState(false);
-
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
@@ -59,49 +51,6 @@ export const ConsumerCompareView: React.FC<ConsumerCompareViewProps> = ({
     fetchMedicines();
   }, []);
 
-  // CSV search: triggered when user clicks "Compare Substitutes"
-  const handleCsvSearch = async () => {
-    if (!searchQuery.trim()) return;
-    setCsvLoading(true);
-    setCsvSearched(true);
-    try {
-      const results = await api.searchCsvMedicines(searchQuery, 30);
-      setCsvSearchResults(results);
-      
-      // Auto-select the first result and load its generics
-      if (results.length > 0) {
-        const first = results[0];
-        setCsvSelectedMedicine(first);
-        const genData = await api.getGenerics(first.id);
-        setCsvGenerics(genData.generics || []);
-        setCsvSavings(genData.savings || null);
-      } else {
-        setCsvSelectedMedicine(null);
-        setCsvGenerics([]);
-        setCsvSavings(null);
-      }
-    } catch (err) {
-      console.error('CSV search failed', err);
-    } finally {
-      setCsvLoading(false);
-    }
-  };
-
-  // When a CSV search result is clicked, load its generics
-  const handleSelectCsvMedicine = async (med: any) => {
-    setCsvSelectedMedicine(med);
-    setCsvLoading(true);
-    try {
-      const genData = await api.getGenerics(med.id);
-      setCsvGenerics(genData.generics || []);
-      setCsvSavings(genData.savings || null);
-    } catch (err) {
-      console.error('Failed to load generics', err);
-    } finally {
-      setCsvLoading(false);
-    }
-  };
-
   // Active Selected Medicine (default Augmentin 625)
   const currentDrug = useMemo(() => {
     const found = medicinesData.find(m => 
@@ -113,7 +62,6 @@ export const ConsumerCompareView: React.FC<ConsumerCompareViewProps> = ({
 
   // Filtered substitutes
   const displayedSubstitutes = useMemo(() => {
-    if (!currentDrug?.substitutes) return [];
     let list = currentDrug.substitutes;
     if (janAushadhiOnly) {
       list = list.filter(s => s.isJanAushadhi);
@@ -195,21 +143,11 @@ export const ConsumerCompareView: React.FC<ConsumerCompareViewProps> = ({
 
             {/* Search Button */}
             <button 
-              onClick={handleCsvSearch}
-              disabled={csvLoading}
-              className="w-full md:w-auto px-6 py-3.5 bg-[#00685f] hover:bg-[#008378] text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 shrink-0 disabled:opacity-60"
+              onClick={() => {}}
+              className="w-full md:w-auto px-6 py-3.5 bg-[#00685f] hover:bg-[#008378] text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 shrink-0"
             >
-              {csvLoading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                  <span>Searching 195K medicines...</span>
-                </>
-              ) : (
-                <>
-                  <span>Compare Substitutes</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
+              <span>Compare Substitutes</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
 
@@ -646,243 +584,7 @@ export const ConsumerCompareView: React.FC<ConsumerCompareViewProps> = ({
 
         </div>
 
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {/* CSV DATASET GENERIC COMPARISON SECTION                        */}
-        {/* ═══════════════════════════════════════════════════════════════ */}
-        {csvSearched && (
-          <section className="mt-8 space-y-6">
-            {/* Section Header */}
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs uppercase font-extrabold text-[#00685f] tracking-wider flex items-center gap-1">
-                    <FlaskConical className="w-4 h-4" />
-                    Real Dataset Generic Comparison
-                  </span>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">
-                    195,000+ Medicines
-                  </span>
-                </div>
-                <h2 className="text-lg font-bold text-[#0b1c30]">
-                  Generic Alternatives from India Medicine Database
-                </h2>
-              </div>
-            </div>
 
-            {csvLoading && (
-              <div className="flex items-center justify-center py-12">
-                <div className="flex items-center gap-3 text-[#00685f]">
-                  <span className="w-6 h-6 border-3 border-[#00685f] border-t-transparent rounded-full animate-spin"></span>
-                  <span className="text-sm font-semibold">Scanning 195,000+ medicines for same-salt generics...</span>
-                </div>
-              </div>
-            )}
-
-            {!csvLoading && csvSearchResults.length === 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
-                <AlertTriangle className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                <p className="text-sm font-semibold text-amber-900">No medicines found for "{searchQuery}"</p>
-                <p className="text-xs text-amber-700 mt-1">Try searching by brand name or active salt composition</p>
-              </div>
-            )}
-
-            {!csvLoading && csvSelectedMedicine && (
-              <>
-                {/* Search Results Chips */}
-                {csvSearchResults.length > 1 && (
-                  <div className="bg-white rounded-2xl p-4 shadow-sm border border-[#e5eeff]">
-                    <p className="text-[11px] uppercase font-bold text-[#6d7a77] tracking-wider mb-2">
-                      Found {csvSearchResults.length} matching medicines — Select one to compare:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {csvSearchResults.slice(0, 20).map((med: any) => (
-                        <button
-                          key={med.id}
-                          onClick={() => handleSelectCsvMedicine(med)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                            csvSelectedMedicine?.id === med.id
-                              ? 'bg-[#00685f] text-white shadow-sm'
-                              : 'bg-[#eff4ff] text-[#3d4947] hover:bg-[#dce9ff]'
-                          }`}
-                        >
-                          {med.product_name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Savings Highlight Banner */}
-                {csvSavings && csvSavings.amount_saved > 0 && (
-                  <div className="w-full bg-gradient-to-r from-[#00685f] to-[#008378] text-white rounded-2xl p-4 md:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-                        <Percent className="w-5 h-5 text-emerald-300" />
-                      </div>
-                      <div>
-                        <p className="text-sm md:text-base font-bold text-white leading-snug">
-                          Save up to ₹{csvSavings.amount_saved.toFixed(2)} ({csvSavings.percentage_saved}%) with generic alternatives
-                        </p>
-                        <p className="text-xs text-emerald-100 font-medium">
-                          Cheapest generic: {csvSavings.cheapest_name} at ₹{csvSavings.cheapest_price.toFixed(2)} vs ₹{csvSavings.reference_price.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Reference + Generics Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-                  {/* Left: Reference Medicine */}
-                  <div className="lg:col-span-4">
-                    <div className="bg-white rounded-2xl p-5 shadow-sm border-2 border-[#dce9ff] relative overflow-hidden">
-                      <div className="absolute top-0 right-0 bg-[#eff4ff] text-[#3d4947] text-[10px] font-bold px-3 py-1 rounded-bl-xl border-l border-b border-[#dce9ff] uppercase tracking-wider">
-                        Your Searched Medicine
-                      </div>
-                      <div className="mb-4 pt-4">
-                        <span className="text-[10px] uppercase tracking-wider font-bold text-[#6d7a77]">Brand</span>
-                        <h3 className="text-lg font-bold text-[#0b1c30] mt-0.5">{csvSelectedMedicine.product_name}</h3>
-                        <p className="text-xs text-[#3d4947] font-medium flex items-center gap-1 mt-0.5">
-                          <Building2 className="w-3.5 h-3.5 text-[#6d7a77]" />
-                          {csvSelectedMedicine.product_manufactured}
-                        </p>
-                      </div>
-
-                      <div className="bg-[#eff4ff] rounded-xl p-4 mb-4 border border-[#dce9ff]">
-                        <div className="flex items-baseline justify-between mb-1">
-                          <span className="text-xs text-[#6d7a77] font-medium">MRP</span>
-                          <span className="text-2xl font-black text-[#ba1a1a] tracking-tight">
-                            ₹{csvSelectedMedicine.product_price > 0 ? csvSelectedMedicine.product_price.toFixed(2) : 'N/A'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2.5 text-xs">
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-[#6d7a77]">Category</span>
-                          <p className="text-xs font-semibold text-[#0b1c30]">{csvSelectedMedicine.sub_category}</p>
-                        </div>
-                        <div>
-                          <span className="text-[10px] uppercase font-bold text-[#6d7a77]">Active Salt Composition</span>
-                          <p className="text-xs font-semibold text-[#0b1c30]">{csvSelectedMedicine.salt_composition}</p>
-                        </div>
-                        {csvSelectedMedicine.side_effects && csvSelectedMedicine.side_effects.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-[#f0f4ff]">
-                            <span className="text-[10px] uppercase font-bold text-[#6d7a77]">Common Side Effects</span>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {csvSelectedMedicine.side_effects.slice(0, 5).map((se: string, i: number) => (
-                                <span key={i} className="text-[10px] bg-amber-50 text-amber-800 px-2 py-0.5 rounded border border-amber-200">
-                                  {se}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: Generic Alternatives */}
-                  <div className="lg:col-span-8 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h2 className="text-base font-bold text-[#0b1c30]">
-                          Same-Salt Generic Alternatives ({csvGenerics.length})
-                        </h2>
-                        <p className="text-xs text-[#6d7a77]">
-                          All medicines with identical active composition: <strong>{csvSelectedMedicine.salt_composition}</strong>
-                        </p>
-                      </div>
-                      <span className="text-xs text-[#00685f] font-semibold bg-[#e5eeff] px-2.5 py-1 rounded-lg">
-                        Salt Match: 100%
-                      </span>
-                    </div>
-
-                    {csvGenerics.length === 0 && (
-                      <div className="bg-[#f8f9ff] rounded-2xl p-8 text-center border border-[#e5eeff]">
-                        <Info className="w-8 h-8 text-[#6d7a77] mx-auto mb-2" />
-                        <p className="text-sm font-semibold text-[#3d4947]">No generic alternatives found</p>
-                        <p className="text-xs text-[#6d7a77] mt-1">This medicine has a unique salt composition in our database</p>
-                      </div>
-                    )}
-
-                    <div className="space-y-3">
-                      {csvGenerics.map((gen: any, idx: number) => {
-                        const savedAmount = csvSelectedMedicine.product_price > 0 && gen.product_price > 0
-                          ? csvSelectedMedicine.product_price - gen.product_price
-                          : 0;
-                        const savedPct = csvSelectedMedicine.product_price > 0 && savedAmount > 0
-                          ? ((savedAmount / csvSelectedMedicine.product_price) * 100).toFixed(0)
-                          : null;
-
-                        return (
-                          <div
-                            key={gen.id}
-                            className={`bg-white rounded-2xl p-5 shadow-sm border transition-all ${
-                              idx === 0
-                                ? 'border-2 border-[#00685f] shadow-[0_4px_20px_rgba(0,104,95,0.08)]'
-                                : 'border-[#e5eeff] hover:border-[#00685f]/40'
-                            }`}
-                          >
-                            <div className="flex flex-wrap items-center gap-2 mb-3">
-                              {idx === 0 && (
-                                <span className="bg-[#00685f] text-white text-[11px] font-extrabold px-2.5 py-0.5 rounded-md flex items-center gap-1">
-                                  <Award className="w-3 h-3" />
-                                  CHEAPEST GENERIC
-                                </span>
-                              )}
-                              <span className="bg-[#eff4ff] text-[#00685f] text-[11px] font-bold px-2.5 py-0.5 rounded-md">
-                                GENERIC #{idx + 1}
-                              </span>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                              <div className="space-y-1 flex-1">
-                                <h4 className="text-base font-bold text-[#0b1c30]">{gen.product_name}</h4>
-                                <p className="text-xs text-[#3d4947] flex items-center gap-1.5 font-medium">
-                                  <Building2 className="w-3.5 h-3.5 text-[#6d7a77]" />
-                                  {gen.product_manufactured}
-                                </p>
-                                <p className="text-xs text-[#6d7a77] pt-1">
-                                  <strong className="text-[#0b1c30]">Salt:</strong> {gen.salt_composition}
-                                </p>
-                                <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
-                                  <span className="bg-[#eff4ff] text-[#0b1c30] px-2 py-0.5 rounded font-medium">
-                                    {gen.sub_category}
-                                  </span>
-                                  <span className="bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-semibold flex items-center gap-1">
-                                    <Check className="w-3 h-3" />
-                                    Same Salt Composition
-                                  </span>
-                                </div>
-                              </div>
-
-                              <div className="sm:text-right shrink-0 bg-[#f8f9ff] sm:bg-transparent p-3 sm:p-0 rounded-xl sm:rounded-none border sm:border-0 border-[#e5eeff]">
-                                <span className="text-[10px] text-[#6d7a77] uppercase font-bold tracking-wider">Price</span>
-                                <div className="flex sm:flex-col items-baseline sm:items-end justify-between gap-2 sm:gap-0">
-                                  <span className="text-2xl font-black text-[#00685f] tracking-tight">
-                                    ₹{gen.product_price > 0 ? gen.product_price.toFixed(2) : 'N/A'}
-                                  </span>
-                                </div>
-                                {savedAmount > 0 && savedPct && (
-                                  <div className="mt-2 inline-flex items-center gap-1 bg-emerald-100 text-emerald-900 text-xs font-black px-2.5 py-1 rounded-lg">
-                                    <span>Save ₹{savedAmount.toFixed(2)}</span>
-                                    <span>({savedPct}% OFF)</span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </section>
-        )}
 
         {/* Clinical Transparency Engine: 4 Pillars */}
         <section className="mt-12 bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#e5eeff]">

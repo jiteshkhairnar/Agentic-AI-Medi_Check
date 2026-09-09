@@ -15,19 +15,6 @@ import {
   AuditLogEvent
 } from '../../../src/types';
 
-// CSV Medicine record shape (from data/medicine.csv)
-export interface CsvMedicine {
-  id: string;
-  sub_category: string;
-  product_name: string;
-  salt_composition: string;
-  product_price: number;
-  product_manufactured: string;
-  medicine_desc: string;
-  side_effects: string[];
-  drug_interactions: any;
-}
-
 // In-Memory Collections
 export const Store = {
   medicines: new Map<string, MedicineProduct>(),
@@ -36,11 +23,7 @@ export const Store = {
   prescriptions: new Map<string, PrescriptionDispenseRequest>(),
   discrepancies: new Map<string, DiscrepancyTicket>(),
   tenants: new Map<string, TenantOrganization>(),
-  auditLogs: new Map<string, AuditLogEvent>(),
-  // CSV dataset
-  csvMedicines: new Map<string, CsvMedicine>(),
-  // Index: normalized salt_composition -> Set of csvMedicine IDs
-  saltIndex: new Map<string, Set<string>>()
+  auditLogs: new Map<string, AuditLogEvent>()
 };
 
 export const initializeInMemoryStore = async () => {

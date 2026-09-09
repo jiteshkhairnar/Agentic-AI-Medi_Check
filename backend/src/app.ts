@@ -19,7 +19,7 @@ app.use(cors({
 // Rate limiting
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Limit each IP to 500 requests per `window` (here, per 15 minutes)
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: { success: false, error: 'Too many requests, please try again later.' }
@@ -46,14 +46,12 @@ import authRoutes from './routes/auth.routes';
 import medicineRoutes from './routes/medicine.routes';
 import pharmacistRoutes from './routes/pharmacist.routes';
 import adminRoutes from './routes/admin.routes';
-import csvMedicineRoutes from './routes/csvMedicine.routes';
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
 app.use('/api/v1/pharmacist', pharmacistRoutes);
 app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/csv-medicines', csvMedicineRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
