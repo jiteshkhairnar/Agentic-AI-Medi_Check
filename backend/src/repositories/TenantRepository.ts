@@ -1,12 +1,14 @@
 import { TenantOrganization } from '../../../shared/types';
-import { Store } from '../store/inMemoryStore';
+import { Tenant } from '../models/Tenant';
 
 export class TenantRepository {
   public static async findAll(): Promise<TenantOrganization[]> {
-    return Array.from(Store.tenants.values());
+    const docs = await Tenant.find().lean();
+    return docs as unknown as TenantOrganization[];
   }
 
   public static async findById(id: string): Promise<TenantOrganization | null> {
-    return Store.tenants.get(id) || null;
+    const doc = await Tenant.findOne({ id }).lean();
+    return doc ? (doc as unknown as TenantOrganization) : null;
   }
 }

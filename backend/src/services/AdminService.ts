@@ -1,6 +1,6 @@
 import { DiscrepancyRepository } from '../repositories/DiscrepancyRepository';
 import { DiscrepancyTicket, AuthUser } from '../../../shared/types';
-import { Store } from '../store/inMemoryStore';
+import { User } from '../models/User';
 
 export class AdminService {
   /**
@@ -13,24 +13,29 @@ export class AdminService {
     const ticket = await DiscrepancyRepository.findById(ticketId);
     if (!ticket) return null;
 
+    let newStatus = ticket.status;
     if (action === 'resolve') {
-      ticket.status = 'resolved';
+      newStatus = 'resolved';
     } else if (action === 'quarantine') {
-      ticket.status = 'quarantine_active';
+      newStatus = 'quarantine_active';
     } else if (action === 'investigate') {
-      ticket.status = 'active_investigating';
+      newStatus = 'active_investigating';
     }
 
-    // Since we didn't add a dedicated updateStatus to DiscrepancyRepository, 
-    // we just modify the reference. InMemoryStore is updated automatically because of object reference.
-    return ticket;
+    return DiscrepancyRepository.update(ticketId, { status: newStatus });
   }
 
   /**
    * Get all users registered on the platform
    */
   public static async getPlatformUsers(): Promise<AuthUser[]> {
-    return Array.from(Store.users.values());
+    const docs = await User.find().lean();
+    // Re-map the `_id` back to `id` explicitly if needed
+    return docs.map(doc => {
+      const user = { ...doc, id: doc.id || (doc as any)._id.toString() };
+      delete (user as any)._id;
+      return user;
+    }) as unknown as AuthUser[];
   }
 
   /**

@@ -1,22 +1,24 @@
 import { MedicineProduct } from '../../../shared/types';
-import { Store } from '../store/inMemoryStore';
+import { Medicine } from '../models/Medicine';
 
 export class MedicineRepository {
   public static async findAll(): Promise<MedicineProduct[]> {
-    return Array.from(Store.medicines.values());
+    const docs = await Medicine.find().lean();
+    return docs as unknown as MedicineProduct[];
   }
 
   public static async findById(id: string): Promise<MedicineProduct | null> {
-    return Store.medicines.get(id) || null;
+    const doc = await Medicine.findOne({ id }).lean();
+    return doc ? (doc as unknown as MedicineProduct) : null;
   }
 
   public static async findBySalt(salt: string): Promise<MedicineProduct[]> {
-    const all = await this.findAll();
-    return all.filter(m => m.genericSalt.toLowerCase().includes(salt.toLowerCase()));
+    const docs = await Medicine.find({ genericSalt: { $regex: salt, $options: 'i' } }).lean();
+    return docs as unknown as MedicineProduct[];
   }
 
   public static async findWithPriceBreach(): Promise<MedicineProduct[]> {
-    const all = await this.findAll();
-    return all.filter(m => m.hasPriceBreach);
+    const docs = await Medicine.find({ hasPriceBreach: true }).lean();
+    return docs as unknown as MedicineProduct[];
   }
 }

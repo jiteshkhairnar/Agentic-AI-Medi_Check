@@ -1,29 +1,35 @@
 import { StoreInventoryItem } from '../../../shared/types';
-import { Store } from '../store/inMemoryStore';
+import { Inventory } from '../models/Inventory';
 
 export class InventoryRepository {
   public static async findAll(): Promise<StoreInventoryItem[]> {
-    return Array.from(Store.inventories.values());
+    const docs = await Inventory.find().lean();
+    return docs as unknown as StoreInventoryItem[];
   }
 
   public static async findById(id: string): Promise<StoreInventoryItem | null> {
-    return Store.inventories.get(id) || null;
+    const doc = await Inventory.findOne({ id }).lean();
+    return doc ? (doc as unknown as StoreInventoryItem) : null;
   }
 
-  // In our mock, inventories aren't strictly tied to tenant IDs in the model,
-  // but in a real DB they would be. We'll return all for now to simulate.
   public static async findByTenantId(tenantId: string): Promise<StoreInventoryItem[]> {
-    return this.findAll();
+    // Return all to simulate current behavior, or optionally filter:
+    const docs = await Inventory.find({ tenantId }).lean();
+    return docs as unknown as StoreInventoryItem[];
   }
 
   public static async updateStock(id: string, quantity: number): Promise<StoreInventoryItem | null> {
-    const item = Store.inventories.get(id);
-    if (!item) return null;
-
-    item.stockQuantity = quantity;
-    item.inStock = quantity > 0;
-    item.lastUpdated = 'Just now';
-    Store.inventories.set(id, item);
-    return item;
+    const doc = await Inventory.findOneAndUpdate(
+      { id },
+      { 
+        $set: { 
+          stockQuantity: quantity, 
+          inStock: quantity > 0, 
+          lastUpdated: new Date().toISOString() 
+        } 
+      },
+      { new: true }
+    ).lean();
+    return doc ? (doc as unknown as StoreInventoryItem) : null;
   }
 }

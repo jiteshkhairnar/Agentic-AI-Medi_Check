@@ -1,14 +1,14 @@
 import { AuditLogEvent } from '../../../shared/types';
-import { Store } from '../store/inMemoryStore';
+import { AuditLog } from '../models/AuditLog';
 
 export class AuditRepository {
   public static async findAll(): Promise<AuditLogEvent[]> {
-    return Array.from(Store.auditLogs.values());
+    const docs = await AuditLog.find().sort({ timestamp: -1 }).lean();
+    return docs as unknown as AuditLogEvent[];
   }
 
   public static async createLog(event: AuditLogEvent): Promise<AuditLogEvent> {
-    // In a real system, we'd calculate SHA hashes here based on previous entries
-    Store.auditLogs.set(event.id, event);
-    return event;
+    const doc = await AuditLog.create(event);
+    return doc.toObject() as unknown as AuditLogEvent;
   }
 }
