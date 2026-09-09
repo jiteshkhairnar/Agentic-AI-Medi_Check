@@ -31,6 +31,15 @@ export default function App() {
   // Active Authenticated User Context (Multi-Tenant JWT simulation)
   const [currentUser, setCurrentUser] = useState<AuthUser>(DEMO_USERS.pharmacist);
 
+  // Automatically log in to set the token for the default mock user
+  React.useEffect(() => {
+    import('./api/client').then(({ api }) => {
+      api.login(DEMO_USERS.pharmacist.email).catch(err => {
+        console.error('Failed auto-login:', err);
+      });
+    });
+  }, []);
+
   // Modals state
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isSavingsModalOpen, setIsSavingsModalOpen] = useState(false);

@@ -3,45 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  ShieldCheck, 
-  Users, 
-  Building2, 
-  Layers, 
-  Settings, 
-  FileCheck, 
-  Activity, 
-  Search, 
-  Plus, 
-  CheckCircle2, 
-  AlertTriangle, 
-  ShieldAlert, 
-  History, 
-  Cpu, 
-  Database, 
-  Server, 
-  Lock, 
-  Sparkles, 
-  X, 
-  ExternalLink,
-  ChevronRight,
-  TrendingUp,
-  RefreshCw,
-  Key,
-  UserCheck
+  ShieldCheck, Users, Building2, Layers, Settings, FileCheck, Activity, Search, Plus, CheckCircle2, AlertTriangle, ShieldAlert, History, Cpu, Database, Server, Lock, Sparkles, X, ExternalLink, ChevronRight, TrendingUp, RefreshCw, Key, UserCheck
 } from 'lucide-react';
 import { 
-  AuthUser, 
-  TenantOrganization, 
-  PlatformUserItem, 
-  UserRole,
-  AppViewMode
+  AuthUser, TenantOrganization, PlatformUserItem, UserRole, AppViewMode
 } from '../types';
-import { 
-  INITIAL_TENANTS, 
-  INITIAL_PLATFORM_USERS 
-} from '../data/portalMockData';
+import { INITIAL_TENANTS, INITIAL_PLATFORM_USERS } from '../data/portalMockData';
+import { api } from '../api/client';
 
 interface AdminPortalViewProps {
   currentUser: AuthUser;
@@ -72,8 +42,35 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
   const [newPlan, setNewPlan] = useState<'Free Community' | 'Chemist Pro' | 'Enterprise Multi-Store'>('Chemist Pro');
 
   // User management state
-  const [users, setUsers] = useState<PlatformUserItem[]>(INITIAL_PLATFORM_USERS);
+  const [users, setUsers] = useState<PlatformUserItem[]>([]);
   const [userSearch, setUserSearch] = useState('');
+
+  // Load platform users via API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersData = await api.getPlatformUsers();
+        // The API returns AuthUser[], while the view uses PlatformUserItem[]
+        // We'll map them appropriately
+        const platformUsers = usersData.map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          role: u.role,
+          tenantName: u.tenantName,
+          tenantId: u.tenantId,
+          mfaEnabled: true,
+          status: 'active' as const,
+          lastActive: 'Just now',
+          permissions: u.permissions
+        }));
+        setUsers(platformUsers);
+      } catch (err) {
+        console.error('Failed to fetch platform users', err);
+      }
+    };
+    fetchUsers();
+  }, []);
   const [showInviteUserModal, setShowInviteUserModal] = useState(false);
   const [inviteName, setInviteName] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');

@@ -3,45 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Store, 
-  Package, 
-  FileText, 
-  Truck, 
-  TrendingUp, 
-  Plus, 
-  CheckCircle2, 
-  AlertTriangle, 
-  ShieldCheck, 
-  Search, 
-  Filter, 
-  Clock, 
-  Phone, 
-  MapPin, 
-  Sparkles, 
-  Check, 
-  X, 
-  ArrowUpRight, 
-  RotateCcw,
-  IndianRupee,
-  Layers,
-  Building2,
-  Calendar,
-  Zap,
-  Info
+  Store, Package, FileText, Truck, TrendingUp, Plus, CheckCircle2, AlertTriangle, ShieldCheck, Search, Info, Phone, Sparkles, Check, X
 } from 'lucide-react';
 import { 
-  AuthUser, 
-  StoreInventoryItem, 
-  PrescriptionDispenseRequest, 
-  SupplierReorderItem 
+  AuthUser, StoreInventoryItem, PrescriptionDispenseRequest, SupplierReorderItem 
 } from '../types';
-import { 
-  INITIAL_STORE_INVENTORY, 
-  INITIAL_PRESCRIPTION_REQUESTS, 
-  INITIAL_SUPPLIER_ORDERS 
-} from '../data/portalMockData';
+import { INITIAL_SUPPLIER_ORDERS } from '../data/portalMockData';
+import { api } from '../api/client';
 
 interface PharmacistPortalViewProps {
   currentUser: AuthUser;
@@ -55,12 +25,34 @@ export const PharmacistPortalView: React.FC<PharmacistPortalViewProps> = ({
   onNavigateToCompare
 }) => {
   const [activeTab, setActiveTab] = useState<'inventory' | 'prescriptions' | 'supplier' | 'analytics'>('inventory');
+  const [loading, setLoading] = useState(true);
 
   // Inventory state
-  const [inventory, setInventory] = useState<StoreInventoryItem[]>(INITIAL_STORE_INVENTORY);
+  const [inventory, setInventory] = useState<StoreInventoryItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'Jan Aushadhi' | 'Branded Original'>('all');
   const [stockFilter, setStockFilter] = useState<'all' | 'in_stock' | 'low_stock' | 'out_of_stock'>('all');
+
+  // Load initial data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Note: For full inventory, we would normally fetch from API, but we don't have a GET /inventory endpoint yet.
+        // We'll leave inventory fetching stubbed or mock it, but prescriptions are fetched from API:
+        const prescriptionsResponse = await api.getPrescriptions();
+        setPrescriptions(prescriptionsResponse);
+        if (prescriptionsResponse.length > 0) {
+          setSelectedRx(prescriptionsResponse[0]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch store data', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   // New item modal
   const [showAddModal, setShowAddModal] = useState(false);
@@ -74,8 +66,8 @@ export const PharmacistPortalView: React.FC<PharmacistPortalViewProps> = ({
   const [newExpiry, setNewExpiry] = useState('12/2028');
 
   // Prescriptions state
-  const [prescriptions, setPrescriptions] = useState<PrescriptionDispenseRequest[]>(INITIAL_PRESCRIPTION_REQUESTS);
-  const [selectedRx, setSelectedRx] = useState<PrescriptionDispenseRequest | null>(INITIAL_PRESCRIPTION_REQUESTS[0]);
+  const [prescriptions, setPrescriptions] = useState<PrescriptionDispenseRequest[]>([]);
+  const [selectedRx, setSelectedRx] = useState<PrescriptionDispenseRequest | null>(null);
 
   // Supplier reorders state
   const [orders, setOrders] = useState<SupplierReorderItem[]>(INITIAL_SUPPLIER_ORDERS);

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { AuthUser, UserRole } from '../types';
 import { DEMO_USERS } from '../data/portalMockData';
+import { api } from '../api/client';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -63,17 +64,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSimulateLogin = (userKey: string) => {
+  const handleSimulateLogin = async (userKey: string) => {
     setLoginStatus('authenticating');
-    setTimeout(() => {
-      const selected = DEMO_USERS[userKey] || DEMO_USERS.pharmacist;
-      onLoginSuccess(selected);
+    try {
+      const selected = DEMO_USERS[userKey as keyof typeof DEMO_USERS] || DEMO_USERS.pharmacist;
+      // In a real app we would use the actual typed email and password
+      const response = await api.login(selected.email);
+      onLoginSuccess(response.user);
       setLoginStatus('success');
       setTimeout(() => {
         setLoginStatus('idle');
         onClose();
       }, 500);
-    }, 600);
+    } catch (err) {
+      console.error('Login failed', err);
+      setLoginStatus('idle');
+    }
   };
 
   return (
